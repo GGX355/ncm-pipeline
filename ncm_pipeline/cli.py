@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from . import __version__
-from .config import CONFIG_TEMPLATE, default_config_path, load_config
+from .config import default_config_path, load_config, render_config
 
 
 def _cfg(args):
@@ -21,7 +21,7 @@ def cmd_init(args) -> int:
         print("已存在 %s（--force 覆盖）" % p)
         return 1
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(CONFIG_TEMPLATE, encoding="utf-8")
+    p.write_text(render_config(base_dir=Path.cwd()), encoding="utf-8")
     print("已生成配置 %s，请修改路径后运行 `ncm-pipeline doctor`" % p)
     return 0
 
