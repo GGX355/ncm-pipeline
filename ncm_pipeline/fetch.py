@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import json
-import sys
 import time
 from pathlib import Path
 
@@ -19,12 +18,9 @@ def login(cfg, open_image: bool = True) -> Path:
     if not server_reachable(cfg.api_base):
         p = start_server(cfg.api_server_dir, cfg.api_base)
         if p is None:
-            print("API 服务不可达且无法自动启动。请先在本机部署：\n"
-                  "  mkdir -p %s && cd %s\n"
-                  "  npm init -y && npm install @neteaseapireborn/api\n"
-                  "  PORT=3000 node node_modules/@neteaseapireborn/api/app.js"
-                  % (cfg.api_server_dir, cfg.api_server_dir))
-            sys.exit(1)
+            raise RuntimeError(
+                "API 服务不可达且无法自动启动：先点「②安装/启动API」装好服务"
+                "（需要 Node.js；或手动在 %s 里执行 npm install @neteaseapireborn/api）" % cfg.api_server_dir)
         time.sleep(4)
     api = NetEaseAPI(cfg.api_base)
     cookie = api.qr_login(Path(cfg.data_dir) / "login_qr.png",
