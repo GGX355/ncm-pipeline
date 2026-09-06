@@ -61,6 +61,17 @@ Python >= 3.11：
 
 看 config.example.toml，注释挺全。路径都能改，watch_dirs 可以配多个。
 
+## 喂给游戏
+
+成品库可以直接同步给赛车游戏（命令行 `game-sync --game gta5|horizon`，GUI 里也有按钮）：
+
+- **GTA5 自电台**（官方功能）：自动找 `文档\Rockstar Games\GTA V\User Music`，
+  mp3/m4a 直接复制，flac 自动转 mp3 320k，增量同步。进游戏 设置→声音→执行快速扫描。
+- **地平线 6 歌曲包**：游戏本身不支持自定义电台，社区做法是替换原电台歌曲槽位
+  （[FH6 Radio Tools](https://www.nexusmods.com/forzahorizon6/mods/19)）。
+  这里只负责把原料备齐：批量转 320k mp3、规范命名、输出到 `Horizon6歌曲包` 文件夹
+  并附操作指引；槽位映射和进歌点需要人工核对，交给那些成熟工具做。
+
 ## 第三方
 
 - [taurusxin/ncmdump](https://github.com/taurusxin/ncmdump)（MIT）：转码核心。工具按需下载官方编译的 exe，仓库里不带二进制

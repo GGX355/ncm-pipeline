@@ -210,6 +210,14 @@ def run() -> int:
         else:
             print("%s还不存在：%s" % (what, path))
 
+    def t_game_gta():
+        from .games import sync_gta
+        sync_gta(state["cfg"])
+
+    def t_game_horizon():
+        from .games import prep_horizon
+        prep_horizon(state["cfg"])
+
     def t_open_config():
         os.startfile(str(cfg_path))
 
@@ -249,10 +257,13 @@ def run() -> int:
     add_btn("重新走一遍向导", 0, 3, lambda: open_wizard(edit=True),
             color="#6b7280")
     add_btn("编辑配置文件", 1, 3, t_open_config, color="#6b7280")
+    add_btn("同步到GTA5", 2, 3, t_game_gta, color="#3d5a80")
+    add_btn("地平线6歌曲包", 3, 3, t_game_horizon, color="#3d5a80")
 
     hint = tk.Label(root, fg="#888", anchor="w", justify="left",
                     text="推荐顺序：②安装API → ③扫码登录 → ④拉取数据 → ⑤生成报告；"
-                         "客户端下载歌的时候点 ①监视转码 挂着就行。")
+                         "客户端下载歌的时候点 ①监视转码 挂着就行；"
+                         "想开车听歌就用最右下两个游戏按钮。")
     hint.pack(fill="x", padx=12)
 
     # ---------------- 监视转码 ----------------

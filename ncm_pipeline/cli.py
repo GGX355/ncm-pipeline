@@ -132,6 +132,14 @@ def cmd_verify(args) -> int:
     return 0 if ok else 1
 
 
+def cmd_game_sync(args) -> int:
+    from .games import prep_horizon, sync_gta
+    cfg = _cfg(args)
+    fn = sync_gta if args.game == "gta5" else prep_horizon
+    fn(cfg, limit=args.limit or None)
+    return 0
+
+
 def cmd_gui(args) -> int:
     from .gui import run as run_gui
     return run_gui()
@@ -199,6 +207,11 @@ def main(argv=None) -> int:
     p = sub.add_parser("verify", help="mutagen 抽检成品", parents=[common_sub])
     p.add_argument("-n", type=int, default=5)
     p.set_defaults(fn=cmd_verify)
+
+    p = sub.add_parser("game-sync", help="把成品库同步给游戏（GTA5 自电台 / 地平线6 歌曲包）")
+    p.add_argument("--game", choices=["gta5", "horizon"], required=True)
+    p.add_argument("--limit", type=int, default=0, help="只处理前 N 首（测试用）")
+    p.set_defaults(fn=cmd_game_sync)
 
     p = sub.add_parser("gui", help="打开图形界面")
     p.set_defaults(fn=cmd_gui)
