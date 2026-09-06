@@ -1,0 +1,38 @@
+# ncm-pipeline 配置模板：复制为 config.toml 后按需修改（路径正斜杠/反斜杠均可）
+
+[paths]
+# 监视/扫描的 ncm 来源目录（可多个；普通下载目录也可以放进来，里面没有 ncm 就自动跳过）
+watch_dirs = ["D:/CloudMusic/VipSongsDownload", "D:/CloudMusic"]
+# 转码成品输出目录
+output_dir = "D:/CloudMusic/NetEase"
+# 转码成功标记目录（防重复转，幂等）
+done_dir = "D:/CloudMusic/tools/done"
+# 数据 JSON 目录（fetch 的输出 / analyze 的输入，cookie 也存这里且仅本地）
+data_dir = "D:/CloudMusic/analysis/data"
+# 图表输出目录
+charts_dir = "D:/CloudMusic/analysis/charts"
+# 报告输出路径
+report_path = "D:/CloudMusic/analysis/report.html"
+
+[convert]
+# 新出现的文件等待稳定秒数（防止下到一半就转）
+stable_seconds = 30
+# 每轮扫描间隔秒数
+round_seconds = 20
+
+[tools]
+# ncmdump 可执行文件路径；留空则按顺序：PATH → tools_dir → 自动从 GitHub Releases 下载
+ncmdump = ""
+tools_dir = "D:/CloudMusic/tools"
+
+[api]
+# 本机 API 服务（npm 包 @neteaseapireborn/api）地址
+base = "http://127.0.0.1:3000"
+# 服务所在目录（含 node_modules）；`ncm-pipeline serve` 会用它启动
+server_dir = "D:/CloudMusic/tools/api-server"
+
+[dedup]
+# 库内重复文件移动目标
+duplicates_dir = "D:/CloudMusic/NetEase/_duplicates"
+# 参考目录（客户端直下、由客户端管理，只参与重复判断、绝不动里面的文件）
+reference_dirs = ["D:/CloudMusic"]

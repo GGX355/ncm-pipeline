@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+config.toml
+cookie*.json
+*.log
+.test-out/
+.ncm-pipeline/
+*.spec

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ncm-pipeline"
+version = "0.1.0"
+description = "网易云音乐个人音乐库流水线：ncm 监视转码 → 成品库去重 → 个人数据拉取 → 品味趋势分析报告（仅限个人备份与自用分析）"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "GGX355" }]
+keywords = ["netease", "ncm", "ncmdump", "music", "backup", "analysis"]
+dependencies = [
+    "requests>=2.31",
+    "mutagen>=1.47",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+]
+classifiers = [
+    "Environment :: Console",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+
+[project.scripts]
+ncm-pipeline = "ncm_pipeline.cli:main"
+
+[tool.setuptools]
+packages = ["ncm_pipeline"]
