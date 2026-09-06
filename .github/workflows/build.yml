@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install . pyinstaller
-      - run: pyinstaller --noconfirm --onefile --name ncm-pipeline --paths . launcher.py
+      - run: pyinstaller --noconfirm --onefile --windowed --name ncm-pipeline --paths . launcher.py
       - uses: actions/upload-artifact@v4
         with:
           name: ncm-pipeline-windows

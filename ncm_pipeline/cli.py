@@ -8,33 +8,7 @@ import time
 from pathlib import Path
 
 from . import __version__
-from .config import default_config_path, load_config
-
-CONFIG_TEMPLATE = '''# ncm-pipeline 配置（由 `ncm-pipeline init` 生成，请按需修改路径）
-[paths]
-watch_dirs = ["D:/CloudMusic/VipSongsDownload", "D:/CloudMusic"]
-output_dir = "D:/CloudMusic/NetEase"
-done_dir = "D:/CloudMusic/tools/done"
-data_dir = "D:/CloudMusic/analysis/data"
-charts_dir = "D:/CloudMusic/analysis/charts"
-report_path = "D:/CloudMusic/analysis/report.html"
-
-[convert]
-stable_seconds = 30
-round_seconds = 20
-
-[tools]
-ncmdump = ""
-tools_dir = "D:/CloudMusic/tools"
-
-[api]
-base = "http://127.0.0.1:3000"
-server_dir = "D:/CloudMusic/tools/api-server"
-
-[dedup]
-duplicates_dir = "D:/CloudMusic/NetEase/_duplicates"
-reference_dirs = ["D:/CloudMusic"]
-'''
+from .config import CONFIG_TEMPLATE, default_config_path, load_config
 
 
 def _cfg(args):
@@ -158,6 +132,11 @@ def cmd_verify(args) -> int:
     return 0 if ok else 1
 
 
+def cmd_gui(args) -> int:
+    from .gui import run as run_gui
+    return run_gui()
+
+
 def cmd_dedup(args) -> int:
     from .dedup import run_dedup
     cfg = _cfg(args)
@@ -168,6 +147,10 @@ def cmd_dedup(args) -> int:
 
 
 def main(argv=None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv:  # 双击 exe / 无参数直接开图形界面
+        from .gui import run as run_gui
+        return run_gui()
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("-c", "--config", help="config.toml 路径")
     # 子命令里的 -c 用 SUPPRESS 默认值：避免子命名空间回拷覆盖主解析器读到的值
@@ -216,6 +199,9 @@ def main(argv=None) -> int:
     p = sub.add_parser("verify", help="mutagen 抽检成品", parents=[common_sub])
     p.add_argument("-n", type=int, default=5)
     p.set_defaults(fn=cmd_verify)
+
+    p = sub.add_parser("gui", help="打开图形界面")
+    p.set_defaults(fn=cmd_gui)
 
     p = sub.add_parser("dedup", help="按歌手-歌名去重", parents=[common_sub])
     p.add_argument("--dry-run", action="store_true")

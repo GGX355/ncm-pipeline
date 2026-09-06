@@ -8,6 +8,7 @@
 """
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import time
@@ -78,23 +79,60 @@ def is_stable(path: Path, stable_seconds: int) -> bool:
     return True
 
 
+OK_EXTS = (".flac", ".mp3", ".m4a")
+
+
 def convert_one(ncmdump: Path, ncm_path: Path, out_dir: Path,
                 done_dir: Path | None = None) -> bool:
-    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    """先转进临时目录，成功后再移动到成品目录——中途被杀也不会留下半截成品。"""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    tmp = out_dir / ("_tmp_%d" % os.getpid())
+    tmp.mkdir(parents=True, exist_ok=True)
     try:
-        proc = subprocess.run(
-            [str(ncmdump), str(ncm_path), "-o", str(out_dir)],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=900)
-    except subprocess.TimeoutExpired:
-        return False
-    if proc.returncode != 0:
-        return False
-    if done_dir:
-        Path(done_dir).mkdir(parents=True, exist_ok=True)
-        base = Path(ncm_path).stem
-        (Path(done_dir) / (base + ".done")).write_text(
-            time.strftime("%Y-%m-%dT%H:%M:%S"), encoding="utf-8")
-    return True
+        try:
+            proc = subprocess.run(
+                [str(ncmdump), str(ncm_path), "-o", str(tmp)],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=900)
+        except subprocess.TimeoutExpired:
+            return False
+        if proc.returncode != 0:
+            return False
+        moved = False
+        for f in list(tmp.iterdir()):
+            if f.suffix.lower() not in OK_EXTS:
+                continue
+            dest = out_dir / f.name
+            if dest.exists():
+                try:
+                    dest.unlink()
+                except OSError:
+                    continue
+            try:
+                f.replace(dest)
+                moved = True
+            except OSError:
+                continue
+        return moved
+    finally:
+        for f in tmp.iterdir():
+            try:
+                f.unlink()
+            except OSError:
+                pass
+        try:
+            tmp.rmdir()
+        except OSError:
+            pass
+        if done_dir and moved_check(out_dir, Path(ncm_path).stem):
+            Path(done_dir).mkdir(parents=True, exist_ok=True)
+            (Path(done_dir) / (Path(ncm_path).stem + ".done")).write_text(
+                time.strftime("%Y-%m-%dT%H:%M:%S"), encoding="utf-8")
+
+
+def moved_check(out_dir: Path, base: str) -> bool:
+    return any((out_dir / (base + e)).exists() for e in OK_EXTS)
 
 
 def convert_pending(cfg) -> int:

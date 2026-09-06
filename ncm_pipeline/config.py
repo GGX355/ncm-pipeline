@@ -89,3 +89,31 @@ def load_config(path: Path | None = None) -> Config:
               cfg.duplicates_dir]:
         d.mkdir(parents=True, exist_ok=True)
     return cfg
+
+
+CONFIG_TEMPLATE = '''# ncm-pipeline 配置（由 `ncm-pipeline init` 生成，请按需修改路径）
+[paths]
+watch_dirs = ["D:/CloudMusic/VipSongsDownload", "D:/CloudMusic"]
+output_dir = "D:/CloudMusic/NetEase"
+done_dir = "D:/CloudMusic/tools/done"
+data_dir = "D:/CloudMusic/analysis/data"
+charts_dir = "D:/CloudMusic/analysis/charts"
+report_path = "D:/CloudMusic/analysis/report.html"
+
+[convert]
+stable_seconds = 30
+round_seconds = 20
+
+[tools]
+ncmdump = ""
+tools_dir = "D:/CloudMusic/tools"
+
+[api]
+base = "http://127.0.0.1:3000"
+server_dir = "D:/CloudMusic/tools/api-server"
+
+[dedup]
+duplicates_dir = "D:/CloudMusic/NetEase/_duplicates"
+reference_dirs = ["D:/CloudMusic"]
+'''
+

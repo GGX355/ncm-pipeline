@@ -15,7 +15,7 @@
 
 ## 安装
 
-不想折腾 Python 的话，去 [Releases](https://github.com/GGX355/ncm-pipeline/releases) 下打包好的 ncm-pipeline.exe，用法一样（`ncm-pipeline.exe doctor -c config.toml`）。
+不想折腾 Python 的话，去 [Releases](https://github.com/GGX355/ncm-pipeline/releases) 下打包好的 ncm-pipeline.exe，**双击打开就是图形界面**：环境自检、监视转码、去重、扫码登录、拉数据、生成报告都是按钮，日志直接看，命令行有的功能它都有。
 
 Python >= 3.11：
 
